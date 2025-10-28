@@ -1,0 +1,40 @@
+[
+  {
+    "name": "CSMOV GUNGAME",
+    "ftp_host": "37.230.210.167",
+    "ftp_user": "cs1",
+    "ftp_pass": "CsMove_GunGame",
+    "ftp_timeout": 30,
+    "reports": [
+      {
+        "type": "mapstats",
+        "name": "Mapstats",
+        "ftp_path": "/27015/cstrike/addons/amxmodx/logs/mapstats_YYYY-MM-DD.log"
+      },
+      {
+        "type": "analyzer",
+        "name": "Analyzer",
+        "ftp_path": "/27015/cstrike/addons/amxmodx/logs/analyzer/analyzer_YYYY.MM.DD.log"
+      }
+    ]
+  },
+  {
+    "name": "CSMOV BIOHAZARD",
+    "ftp_host": "37.230.210.43",
+    "ftp_user": "u1",
+    "ftp_pass": "csmove_z",
+    "ftp_passive": true,
+    "reports": [
+      {
+        "type": "mapstats",
+        "name": "Mapstats",
+        "ftp_path": "/27015/cstrike/addons/amxmodx/logs/mapstats_YYYY-MM-DD.log"
+      },
+      {
+        "type": "analyzer",
+        "name": "Analyzer",
+        "ftp_path": "/27015/cstrike/addons/amxmodx/logs/analyzer/analyzer_YYYY.MM.DD.log"
+      }
+    ]
+  }
+]
