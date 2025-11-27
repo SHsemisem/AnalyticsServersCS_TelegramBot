@@ -34,10 +34,13 @@ def test_aggregate_and_format_analyzer_summary():
     assert len(summaries) == 2  # два источника
     assert summaries[0].source == "fullserver.org"
     assert summaries[0].hits == 2
+    assert summaries[0].unique_hits == 1
+    assert summaries[1].unique_hits == 1
 
     table = format_analyzer_table(summaries, tz)
     lines = table.splitlines()
     assert lines[0].strip().startswith("site")
-    assert lines[0].strip().endswith("count")
+    assert lines[0].strip().endswith("unique")
     assert "fullserver.org" in lines[1]
-    assert lines[1].rstrip().endswith("2")  # количество событий для топа
+    assert lines[1].split()[-2] == "2"  # колонка count
+    assert lines[1].split()[-1] == "1"  # колонка unique

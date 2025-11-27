@@ -16,6 +16,7 @@ import pytz
 import matplotlib
 matplotlib.use("Agg")  # без GUI
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from dotenv import load_dotenv
 from telegram import (
@@ -125,6 +126,7 @@ class AnalyzerEntry:
 class AnalyzerSummary:
     source: str
     hits: int
+    unique_hits: int
     unique_steam: int
     unique_ips: int
     last_seen: dt.datetime
@@ -451,10 +453,15 @@ def aggregate_analyzer_entries(
                 "count": 0,
                 "steam": set(),
                 "ips": set(),
+                "unique": 0,
                 "last_seen": entry.timestamp,
             },
         )
         stats["count"] += 1
+        steam_seen = entry.steam_id in stats["steam"]
+        ip_seen = entry.ip in stats["ips"]
+        if not steam_seen and not ip_seen:
+            stats["unique"] += 1
         stats["steam"].add(entry.steam_id)
         stats["ips"].add(entry.ip)
         if entry.timestamp > stats["last_seen"]:
@@ -464,6 +471,7 @@ def aggregate_analyzer_entries(
         AnalyzerSummary(
             source=source,
             hits=data["count"],
+            unique_hits=data["unique"],
             unique_steam=len(data["steam"]),
             unique_ips=len(data["ips"]),
             last_seen=data["last_seen"],
@@ -480,13 +488,14 @@ def format_analyzer_table(
     if not summaries:
         return ""
 
-    headers = ("site", "count")
+    headers = ("site", "count", "unique")
     rows = []
     for summary in summaries:
         rows.append(
             [
                 summary.source,
                 str(summary.hits),
+                str(summary.unique_hits),
             ]
         )
 
@@ -523,11 +532,15 @@ def make_plot(points, order_unique, map_index, date_for_title: dt.date) -> bytes
 
     ax.plot(times, avgs, marker="x", linestyle="-", linewidth=1.2)
     ax.set_title(f"Дневной онлайн за {date_for_title:%Y-%m-%d} (номер = карта из списка)", fontsize=12)
-    ax.set_xlabel("Время записи (ЧЧ:ММ)")
+    ax.set_xlabel("Время записи (часы, 24-часовой формат)")
     ax.set_ylabel("Средний онлайн (игроков)")
 
     # сетка и формат осей
     ax.grid(True, alpha=0.25)
+
+    tzinfo = next((t.tzinfo for t in times if t.tzinfo), TZ)
+    ax.xaxis.set_major_locator(mdates.HourLocator(interval=1, tz=tzinfo))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M", tz=tzinfo))
     fig.autofmt_xdate(rotation=45)
 
     # Точки подписываем индексами карты
@@ -550,6 +563,18 @@ def make_plot(points, order_unique, map_index, date_for_title: dt.date) -> bytes
     counts_by_map = Counter(maps)
     most_common_map, _ = counts_by_map.most_common(1)[0]
 
+    day_points = list(_filter_points(points, *DAY_RANGE))
+    day_counts = Counter(map_name for _, _, map_name in day_points)
+    day_max_map = day_min_map = None
+    day_max_count = day_min_count = None
+    if day_counts:
+        day_max_map, day_max_count = max(
+            day_counts.items(), key=lambda item: (item[1], -map_index.get(item[0], 0))
+        )
+        day_min_map, day_min_count = min(
+            day_counts.items(), key=lambda item: (item[1], map_index.get(item[0], 0))
+        )
+
     avg_day = _average_online(points, *DAY_RANGE)
     avg_evening = _average_online(points, *EVENING_RANGE)
     avg_night = _average_online(points, *NIGHT_RANGE)
@@ -567,6 +592,14 @@ def make_plot(points, order_unique, map_index, date_for_title: dt.date) -> bytes
         summary_lines.append(f"Самая популярная карта по онлайне (днём) — {popular_day_map}")
     if drop_day_map:
         summary_lines.append(f"Карта с самым сильным падением онлайна (днём) — {drop_day_map}")
+    if day_max_map:
+        summary_lines.append(
+            f"Больше всего коннектов (07:00-23:00) — {day_max_map} ({day_max_count})"
+        )
+    if day_min_map:
+        summary_lines.append(
+            f"Меньше всего коннектов (07:00-23:00) — {day_min_map} ({day_min_count})"
+        )
     summary_lines.append(f"Пик онлайна — {max_online} на карте {max_map} в {max_time:%H:%M}")
     summary_lines.append(f"Чаще остальных встречалась карта — {most_common_map}")
 
