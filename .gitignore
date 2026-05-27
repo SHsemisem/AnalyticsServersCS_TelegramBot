@@ -1,0 +1,49 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.local
+servers.local.json
+servers.*.local.json
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Runtime logs and generated reports
+*.log
+*.png
+*.jpg
+*.jpeg
+*.txt
+!requirements.txt
+!tests/data/*.log
+
+# Editor and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local Codex/agent metadata
+.codex/
+.agents/

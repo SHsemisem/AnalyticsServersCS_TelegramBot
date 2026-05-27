@@ -1,16 +1,16 @@
 [
   {
-    "name": "CSMOV GUNGAME",
-    "ftp_host": "37.230.210.167",
-    "ftp_user": "hlds",
-    "ftp_pass": "hlds_csmove_gungame",
+    "name": "Server1",
+    "ftp_host": "ip_address_1",
+    "ftp_user": "login1",
+    "ftp_pass": "password1",
     "ftp_timeout": 30,
     "ftp_passive": true,
     "reports": [
       {
         "type": "mapstats",
         "name": "Mapstats",
-        "ftp_path": "/cs16/27015/cstrike/addons/amxmodx/logs/mapstats_YYYY-MM-DD.log"
+        "ftp_path": "/cs16/27015/cstrike/addons/amxmodx/logs/mapstats/mapstats_YYYY-MM-DD.log"
       },
       {
         "type": "analyzer",
@@ -20,22 +20,22 @@
     ]
   },
   {
-    "name": "CSMOV BIOHAZARD",
-    "ftp_host": "37.230.210.43",
-    "ftp_user": "hlds",
-    "ftp_pass": "hlds_csmove_zombie",
+    "name": "Server2",
+    "ftp_host": "ip_address_2",
+    "ftp_user": "login2",
+    "ftp_pass": "password2",
     "ftp_timeout": 30,
     "ftp_passive": true,
     "reports": [
       {
         "type": "mapstats",
         "name": "Mapstats",
-        "ftp_path": "/cs16/27015/cstrike/addons/amxmodx/logs/mapstats_YYYY-MM-DD.log"
+        "ftp_path": "/cs16/27016/cstrike/addons/amxmodx/logs/mapstats/mapstats_YYYY-MM-DD.log"
       },
       {
         "type": "analyzer",
         "name": "Analyzer",
-        "ftp_path": "/cs16/27015/cstrike/addons/amxmodx/logs/analyzer/analyzer_YYYY.MM.DD.log"
+        "ftp_path": "/cs16/27016/cstrike/addons/amxmodx/logs/analyzer/analyzer_YYYY.MM.DD.log"
       }
     ]
   }

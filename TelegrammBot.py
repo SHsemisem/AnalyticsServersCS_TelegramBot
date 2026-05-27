@@ -81,7 +81,7 @@ CHOOSE_DATE, CUSTOM_DATE_INPUT, CHOOSE_SERVER, CHOOSE_REPORT = range(4)
 LAST_CHOICES_KEY = "last_user_choices"
 
 HELP_MESSAGE = (
-    "👋 Этот бот собирает отчеты по серверам CSMOV.\n\n"
+    "👋 Этот бот собирает отчеты по серверам.\n\n"
     "• /start — открыть меню выбора отчета.\n"
     "• /cancel — прервать текущий диалог.\n"
     "• /help — показать эту подсказку.\n\n"
@@ -376,9 +376,9 @@ def parse_mapstats_log(text: str, tz: pytz.BaseTzInfo):
         map_name = head.group("map").strip()
         avg = int(avgm.group("avg"))
         naive = dt.datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
-        aware = pytz.utc.localize(naive) if naive.tzinfo is None else naive
+        # aware = pytz.utc.localize(naive) if naive.tzinfo is None else naive
         # Если в файле локальное время — уберите utc.localize и сделайте tz.localize
-        # aware = tz.localize(naive)
+        aware = tz.localize(naive)
         points.append((aware.astimezone(tz), avg, map_name))
         maps_order.append(map_name)
 
